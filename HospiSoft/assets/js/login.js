@@ -44,6 +44,18 @@
               location.reload();
             } else {
               if (
+                document.querySelector("#addSupply") &&
+                res[0].id_rol != 0 &&
+                res[0].id_rol != 4
+              ) {
+                location.href = "./dashboard.html";
+              } else if (
+                document.querySelector("#addPatient") &&
+                res[0].id_rol != 0 &&
+                res[0].id_rol != 1
+              ) {
+                location.href = "./dashboard.html";
+              } else if (
                 (res[0].id_rol != 0 &&
                   res[0].id_rol != 1 &&
                   document.querySelector("#addUser")) ||

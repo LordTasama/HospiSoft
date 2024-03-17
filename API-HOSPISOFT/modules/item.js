@@ -8,9 +8,17 @@ const item = express.Router();
 const cnx = require("./bdata");
 
 // Ruta para obtener la lista de ítems
-item.get("/item/list", (req, res) => {
+item.get("/item/list/:tipo", (req, res) => {
   // Consulta SQL para obtener todos los ítems
-  const query = "select * from item";
+  let tipo = req.params.tipo;
+
+  if (tipo != 0 || tipo != 1) {
+    tipo = 0;
+  }
+  const query =
+    "select * from item where tipo =" +
+    req.params.tipo +
+    " order by estado desc";
 
   // Ejecutar la consulta
   cnx.query(query, (error, data) => {
@@ -30,19 +38,33 @@ item.get("/item/list", (req, res) => {
 });
 
 // Ruta para buscar un ítem por su ID
-item.get("/item/find/:id", (req, res) => {
+item.get("/item/find/:search", (req, res) => {
   // Obtener el ID del ítem de los parámetros de la solicitud
   const id = req.params.id;
-
-  // Consulta SQL para buscar un ítem por su ID
-  const query = "select * from item where id = " + id;
+  const search = req.params.search;
+  let query = "select * from  item where id=-1";
+  // Consulta SQL para buscar un ítem por su ID o descripción
+  if (search && Number.isInteger(Number(search))) {
+    query = "select * from item where id=" + search;
+  } else if (search && !Number.isInteger(Number(search))) {
+    query = "select * from  item where descripcion like '%" + search + "%'";
+  }
 
   // Ejecutar la consulta
   cnx.query(query, (error, data) => {
     // Manejar el resultado de la consulta
     if (!error) {
       // Si no hay error, devolver los datos del ítem encontrado
-      res.status(200).send(data);
+
+      if (data.length >= 1) {
+        res.status(200).send(data[0]);
+      } else if (data.length == 1) {
+        res.status(200).send(data[0]);
+      } else {
+        res.status(200).send({
+          status: "no-data",
+        });
+      }
     } else {
       // Si hay un error, devolver un mensaje de error
       res.status(404).send({

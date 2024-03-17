@@ -60,12 +60,10 @@
       },
     },
   };
-  let dataTable = $("#dataTable");
-  const bodyTable = document.querySelector("#bodyTable");
 
   const putId = document.querySelector("#putId");
   const deleteId = document.querySelector("#deleteId");
-  let rolOriginal = -1;
+  let rolOriginal;
   async function getData() {
     try {
       const response = await fetch("http://localhost:3000/user/list/", {
@@ -90,7 +88,7 @@
     try {
       // Esperar a que los datos estén disponibles antes de continuar
       const data = await getData();
-      bodyTable.innerHTML = "";
+      const bodyTable = document.querySelector("#bodyTable");
       const campos = [
         "identificacion",
         "nombres",
@@ -143,6 +141,31 @@
   }
 
   loadTable();
+
+  const changeTable = () => {
+    document.querySelector("#containerTable").innerHTML = "";
+    document.querySelector("#containerTable").innerHTML = ` <table
+    class="table table-bordered"
+    id="dataTable"
+    width="100%"
+    cellspacing="0"
+  >
+    <thead>
+      <tr>
+        <th>Identificación</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Usuario</th>
+        <th>Correo</th>
+        <th>Rol</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="bodyTable"></tbody>
+  </table>`;
+
+    loadTable();
+  };
 
   async function fillData(id, condition) {
     try {
@@ -219,13 +242,13 @@
       !email.value ||
       !password.value
     ) {
-      alert("Verifica si hay campos vacíos");
+      normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
       return;
     }
 
     // Validación del ID
     if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-      alert("Identificación no válida");
+      normalAlert("warning", "Identificación no válida.", 1500, "");
       return;
     }
 
@@ -233,8 +256,11 @@
     const nameRegex =
       /^[a-zA-ZáéíóúÁÉÍÓÚüÜ]{1,20}(?:[ ][a-zA-ZáéíóúÁÉÍÓÚüÜ]{1,20})?$/;
     if (!nameRegex.test(names.value) || !nameRegex.test(lastname.value)) {
-      alert(
-        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres."
+      normalAlert(
+        "warning",
+        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres.",
+        1500,
+        ""
       );
       return;
     }
@@ -242,8 +268,11 @@
     // Validación de nombre de usuario
     const usernameRegex = /^[a-zA-Z]+$/;
     if (!usernameRegex.test(username.value)) {
-      alert(
-        "El nombre de usuario solo puede contener letras y no debe contener espacios."
+      normalAlert(
+        "warning",
+        "El nombre de usuario solo puede contener letras y no debe contener espacios.",
+        1500,
+        ""
       );
       return;
     }
@@ -251,7 +280,12 @@
     // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.value)) {
-      alert("El correo electrónico ingresado no es válido.");
+      normalAlert(
+        "warning",
+        "El correo electrónico ingresado no es válido.",
+        1500,
+        ""
+      );
       return;
     }
 
@@ -259,8 +293,11 @@
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
     if (!passwordRegex.test(password.value)) {
-      alert(
-        "La contraseña debe tener al menos 8 caracteres e incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial."
+      normalAlert(
+        "warning",
+        "La contraseña debe tener al menos 8 caracteres e incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.",
+        2500,
+        ""
       );
       return;
     }
@@ -367,8 +404,9 @@
                                   "success",
                                   "Usuario agregado correctamente",
                                   1500,
-                                  "reload"
+                                  ""
                                 );
+                                changeTable();
                               }
                             });
                         }
@@ -396,21 +434,29 @@
       !username.value ||
       !email.value
     ) {
-      alert("Verifica si hay campos vacíos (excepto contraseña)");
+      normalAlert(
+        "warning",
+        "Verifica si hay campos vacíos (excepto contraseña).",
+        1500,
+        ""
+      );
       return;
     }
 
     // Validación del ID
     if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-      alert("Identificación no válida");
+      normalAlert("warning", "Identificación no válida.", 1500, "");
       return;
     }
 
     // Validación de nombres y apellidos
     const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜ ]{2,20}$/;
     if (!nameRegex.test(names.value) || !nameRegex.test(lastname.value)) {
-      alert(
-        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres."
+      normalAlert(
+        "warning",
+        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres.",
+        1500,
+        ""
       );
       return;
     }
@@ -418,8 +464,11 @@
     // Validación de nombre de usuario
     const usernameRegex = /^[a-zA-Z]+$/;
     if (!usernameRegex.test(username.value)) {
-      alert(
-        "El nombre de usuario solo puede contener letras y no debe contener espacios."
+      normalAlert(
+        "warning",
+        "El nombre de usuario solo puede contener letras y no debe contener espacios.",
+        1500,
+        ""
       );
       return;
     }
@@ -427,17 +476,25 @@
     // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.value)) {
-      alert("El correo electrónico ingresado no es válido.");
+      normalAlert(
+        "warning",
+        "El correo electrónico ingresado no es válido.",
+        1500,
+        ""
+      );
       return;
     }
 
     // Validación de contraseña
     if (password.value) {
       const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[-zA-Z\d!@#$%^&*]{8,}$/;
       if (!passwordRegex.test(password.value)) {
-        alert(
-          "La contraseña debe tener al menos 8 caracteres e incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial."
+        normalAlert(
+          "warning",
+          "La contraseña debe tener al menos 8 caracteres e incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.",
+          2500,
+          ""
         );
         return;
       }
@@ -571,8 +628,9 @@
                                   "success",
                                   "Usuario editado correctamente",
                                   1500,
-                                  "./users.html"
+                                  ""
                                 );
+                                changeTable();
                               }
                             });
                         }
@@ -610,8 +668,9 @@
                               "success",
                               "Usuario editado correctamente",
                               1500,
-                              "./users.html"
+                              ""
                             );
+                            changeTable();
                           }
                         });
                     }
@@ -672,6 +731,15 @@
                   ""
                 );
               } else {
+                if (!document.querySelector("#deleteId").value) {
+                  normalAlert(
+                    "warning",
+                    "Llena el campo identificación",
+                    1500,
+                    ""
+                  );
+                  return;
+                }
                 fetch(
                   "http://localhost:3000/user/status/" +
                     document.querySelector("#deleteId").value,
@@ -699,8 +767,9 @@
                         "success",
                         "El estado ha sido cambiado correctamente",
                         1500,
-                        "./users.html"
+                        ""
                       );
+                      changeTable();
                     }
                   });
               }

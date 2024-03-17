@@ -46,11 +46,11 @@
     ],
     order: [],
     language: {
-      lengthMenu: "Mostrar _MENU_ pacientes por página",
-      zeroRecords: "Ningún paciente encontrado",
-      info: "Mostrando _START_ a _END_ pacientes de _TOTAL_ ",
-      infoEmpty: "Ningún paciente encontrado",
-      infoFiltered: "(filtrados desde _MAX_ pacientes totales)",
+      lengthMenu: "Mostrar _MENU_ suministros por página",
+      zeroRecords: "Ningún suministro encontrado",
+      info: "Mostrando _START_ a _END_ suministros de _TOTAL_ ",
+      infoEmpty: "Ningún suministro encontrado",
+      infoFiltered: "(filtrados desde _MAX_ suministros totales)",
       search: "Buscar:",
       loadingRecords: "Cargando...",
       paginate: {
@@ -62,9 +62,12 @@
     },
   };
 
-  async function fillSelects(selectOne, selectTwo) {
+  const dataDisplay = document.querySelector("#dataDisplay");
+  const putSearch = document.querySelector("#putSearch");
+  const deleteSearch = document.querySelector("#deleteSearch");
+  async function getData(type) {
     try {
-      const response = await fetch("http://localhost:3000/eps/list/", {
+      const response = await fetch("http://localhost:3000/item/list/" + type, {
         headers: {
           Authorization: localStorage.getItem("token"),
           "Content-Type": "application/json",
@@ -74,35 +77,6 @@
         throw new Error("Error al obtener los datos");
       }
       const datos = await response.json();
-
-      datos.forEach((element) => {
-        selectOne.innerHTML += `<option value="${element.nit}">${element.entidad}</option> `;
-        selectTwo.innerHTML += `<option value="${element.nit}">${element.entidad}</option> `;
-      });
-    } catch (error) {
-      console.error("Hubo un error al obtener los datos:", error);
-      throw error; // Propagar el error para manejarlo en un nivel superior si es necesario
-    }
-  }
-
-  const postEps = document.querySelector("#postEps");
-  const putEps = document.querySelector("#putEps");
-  const putId = document.querySelector("#putId");
-  const deleteId = document.querySelector("#deleteId");
-  fillSelects(postEps, putEps);
-  async function getData() {
-    try {
-      const response = await fetch("http://localhost:3000/patient/list/", {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Error al obtener los datos");
-      }
-      const datos = await response.json();
-
       return datos;
     } catch (error) {
       console.error("Hubo un error al obtener los datos:", error);
@@ -110,23 +84,13 @@
     }
   }
 
-  async function tableDownload() {
+  async function tableDownload(type) {
+    const bodyTable = document.querySelector("#bodyTable");
     try {
       // Esperar a que los datos estén disponibles antes de continuar
-      const data = await getData();
-      const bodyTable = document.querySelector("#bodyTable");
-      const campos = [
-        "identificacion",
-        "nombres",
-        "apellidos",
-        "correo",
-        "telefono",
-        "movil",
-        "fecha_nacimiento",
-        "nit_eps",
-        "entidad",
-        "estado",
-      ];
+      const data = await getData(type);
+
+      const campos = ["id", "descripcion", "existencia", "tipo", "estado"];
       for (i = 0; i < data.length; i++) {
         let row = document.createElement("tr");
         let column;
@@ -134,20 +98,16 @@
           column = document.createElement("td");
           column.textContent = data[i][campos[j]];
           const info = column.textContent;
-          if (j == 9) {
+          if (j == 3) {
+            column.textContent = info == 0 ? "Medicamento" : "Elemento";
+          } else if (j == 4) {
             column.textContent = info == 1 ? "Activo" : "Inactivo";
           }
-          if (j == 6) {
-            column.textContent = info.substring(0, 10);
-          }
-          if (j != 7) {
-            row.appendChild(column);
-          }
+          row.append(column);
         }
 
         bodyTable.appendChild(row);
       }
-
       return true;
     } catch (error) {
       // Manejar errores
@@ -156,76 +116,42 @@
     }
   }
 
-  async function loadTable() {
-    if (await tableDownload()) {
+  async function loadTable(type) {
+    if (await tableDownload(type)) {
       $("#dataTable").DataTable(dataTableOptions);
     }
   }
 
-  loadTable();
+  loadTable(0);
 
-  const changeTable = () => {
-    document.querySelector("#containerTable").innerHTML = "";
-    document.querySelector("#containerTable").innerHTML = ` <table
-    class="table table-bordered"
-    id="dataTable"
-    width="100%"
-    cellspacing="0"
-  >
-    <thead>
-      <tr>
-        <th>Identificación</th>
-        <th>Nombres</th>
-        <th>Apellidos</th>
-        <th>Correo</th>
-        <th>Teléfono</th>
-        <th>Móvil</th>
-        <th>Fecha de Nacimiento</th>
-        <th>Eps</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody id="bodyTable"></tbody>
-  </table>`;
-
-    loadTable();
-  };
-
-  async function fillData(id, condition) {
+  async function fillData(search, condition) {
     try {
-      const response = await fetch("http://localhost:3000/patient/find/" + id, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "http://localhost:3000/item/find/" + search,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Error al obtener los datos");
       }
       const datos = await response.json();
       const deleteFullName = document.querySelector("#deleteFullName");
-      if (datos.length > 0) {
+      if (!datos.status) {
         if (condition == 0) {
-          document.querySelector("#putNames").value = datos[0].nombres;
-          document.querySelector("#putLastName").value = datos[0].apellidos;
-          document.querySelector("#putEmail").value = datos[0].correo;
-          document.querySelector("#putCellphone").value = datos[0].telefono;
-          document.querySelector("#putPhone").value = datos[0].movil;
-          document.querySelector("#putBirthdate").value =
-            datos[0].fecha_nacimiento.substring(0, 10);
-
-          for (let i = 0; i < putEps.options.length; i++) {
-            if (putEps.options[i].innerHTML.trim() == datos[0].entidad.trim()) {
-              document.querySelector("#putEps").selectedIndex = i;
-            }
-          }
+          document.querySelector("#putId").value = datos.id;
+          document.querySelector("#putDescription").value = datos.descripcion;
+          document.querySelector("#putStock").value = datos.existencia;
+          document.querySelector("#putType").selectedIndex = datos.tipo;
         } else if (condition == 1) {
           deleteFullName.innerHTML =
-            "¿Estás seguro que deseas cambiar el estado de " +
-            datos[0].nombres +
-            " " +
-            datos[0].apellidos +
-            "?";
+            "¿Estás seguro que deseas cambiar el estado del suministro '" +
+            datos.descripcion +
+            "'?";
+          document.querySelector("#deleteId").value = datos.id;
         }
       } else {
         deleteFullName.innerHTML = "";
@@ -238,15 +164,42 @@
   }
 
   document.querySelector("#btnSearchPut").addEventListener("click", () => {
-    if (putId.value) {
-      fillData(putId.value, 0);
+    if (putSearch.value) {
+      fillData(putSearch.value, 0);
     }
   });
 
   document.querySelector("#btnSearchDelete").addEventListener("click", () => {
-    if (deleteId.value) {
-      fillData(deleteId.value, 1);
+    if (deleteSearch.value) {
+      fillData(deleteSearch.value, 1);
     }
+  });
+
+  const changeTable = () => {
+    document.querySelector("#containerTable").innerHTML = "";
+    document.querySelector("#containerTable").innerHTML = ` <table
+        class="table table-bordered"
+        id="dataTable"
+        width="100%"
+        cellspacing="0"
+      >
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Existencias</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="bodyTable"></tbody>
+      </table>`;
+
+    loadTable(dataDisplay.value);
+  };
+
+  dataDisplay.addEventListener("change", () => {
+    changeTable();
   });
 
   const postMethod = document.querySelector("#btnAdd");
@@ -254,71 +207,39 @@
   const deleteMethod = document.querySelector("#btnDelete");
 
   postMethod.addEventListener("click", () => {
-    const id = document.querySelector("#postId");
-    const names = document.querySelector("#postNames");
-    const lastname = document.querySelector("#postLastName");
-    const email = document.querySelector("#postEmail");
-    const cellPhone = document.querySelector("#postCellphone");
-    const phone = document.querySelector("#postPhone");
-    const birthDate = document.querySelector("#postBirthdate");
+    const description = document.querySelector("#postDescription");
+    const stock = document.querySelector("#postStock");
+    const type = document.querySelector("#postType");
 
-    if (
-      !id.value ||
-      !names.value ||
-      !lastname.value ||
-      !cellPhone.value ||
-      !email.value ||
-      !birthDate.value
-    ) {
-      normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
+    if (!description.value || !stock.value) {
+      normalAlert("warning", "Verifica si hay campos vacíos", 1500, "");
+
       return;
     }
 
-    // Validación del ID
-    if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-      normalAlert("warning", "Identificación no válida.", 1500, "");
-      return;
-    }
-
-    // Validación de nombres y apellidos
-    const nameRegex =
-      /^[a-zA-ZáéíóúÁÉÍÓÚüÜ]{1,20}(?:[ ][a-zA-ZáéíóúÁÉÍÓÚüÜ]{1,20})?$/;
-    if (!nameRegex.test(names.value) || !nameRegex.test(lastname.value)) {
+    // Validación de descripción
+    if (description.length > 0 && description.length <= 50) {
       normalAlert(
         "warning",
-        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres.",
+        "El campo descripción debe tener mínimo 1 caracter y máximo 50",
         1500,
         ""
       );
+
       return;
     }
 
-    // Validación del teléfono y móvil
-    if (cellPhone.value <= 0 || !Number.isInteger(Number(cellPhone.value))) {
-      normalAlert("warning", "Teléfono no válido.", 1500, "");
-      return;
-    }
-
-    if (
-      phone.value &&
-      (phone.value <= 0 || !Number.isInteger(Number(phone.value)))
-    ) {
-      normalAlert("warning", "Móvil no válido.", 1500, "");
-      return;
-    }
-    // Validación de correo electrónico
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.value)) {
+    // Validación de las existencias
+    if (stock.value < 0 || !Number.isInteger(Number(stock.value))) {
       normalAlert(
         "warning",
-        "El correo electrónico ingresado no es válido.",
+        "El campo existencias debe tener mínimo 0 como valor",
         1500,
         ""
       );
-      return;
     }
 
-    fetch("http://localhost:3000/patient/find/" + id.value, {
+    fetch("http://localhost:3000/item/find/" + description.value, {
       headers: {
         Authorization: localStorage.getItem("token"),
         "Content-Type": "application/json",
@@ -326,9 +247,14 @@
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res.length > 0) {
-          if (res[0].identificacion) {
-            normalAlert("error", "Identificación ya existe", 1500, "");
+        if (!res.status) {
+          if (res.id) {
+            normalAlert(
+              "error",
+              "El nombre del suministro ya existe",
+              1500,
+              ""
+            );
           }
         } else {
           fetch("http://localhost:3000/user/login/status", {
@@ -361,30 +287,25 @@
                     );
 
                     localStorage.setItem("token", "");
-                  } else if (res[0].id_rol != 0 && res[0].id_rol != 1) {
+                  } else if (res[0].id_rol != 0 && res[0].id_rol != 4) {
                     normalAlert(
                       "error",
-                      "Necesitas ser administrador para realizar esta acción",
+                      "Necesitas ser dispensario para realizar esta acción",
                       1500,
                       ""
                     );
                   } else {
                     // Envío de la solicitud fetch si todas las validaciones pasaron
-                    fetch("http://localhost:3000/patient/create/", {
+                    fetch("http://localhost:3000/item/create/", {
                       method: "POST",
                       headers: {
                         Authorization: localStorage.getItem("token"),
                         "Content-Type": "application/json",
                       },
                       body: JSON.stringify({
-                        identificacion: id.value,
-                        nombres: names.value,
-                        apellidos: lastname.value,
-                        correo: email.value,
-                        telefono: cellPhone.value,
-                        movil: phone.value,
-                        fecha_nacimiento: birthDate.value,
-                        nit_eps: postEps.value,
+                        descripcion: description.value,
+                        existencia: stock.value,
+                        tipo: type.value,
                       }),
                     })
                       .then((res) => res.json())
@@ -399,7 +320,7 @@
                         } else {
                           normalAlert(
                             "success",
-                            "Paciente agregado correctamente",
+                            "Suministro agregado correctamente",
                             1500,
                             ""
                           );
@@ -415,60 +336,45 @@
 
   editMethod.addEventListener("click", () => {
     const id = document.querySelector("#putId");
-    const names = document.querySelector("#putNames");
-    const lastname = document.querySelector("#putLastName");
-    const email = document.querySelector("#putEmail");
-    const cellPhone = document.querySelector("#putCellphone");
-    const phone = document.querySelector("#putPhone");
-    const birthDate = document.querySelector("#putBirthdate");
+    const description = document.querySelector("#putDescription");
+    const stock = document.querySelector("#putStock");
+    const type = document.querySelector("#putType");
 
-    if (
-      !id.value ||
-      !names.value ||
-      !lastname.value ||
-      !cellPhone.value ||
-      !email.value ||
-      !birthDate.value
-    ) {
-      normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
+    if (!id.value) {
+      normalAlert("warning", "Debe buscar primero un suministro", 1500, "");
+      return;
+    }
+    // Validación del Id
+    if (id.value < 0 || !Number.isInteger(Number(id.value))) {
+      normalAlert("warning", "Id no válida", 1500, "");
+      return;
+    }
+    if (!description.value || !stock.value) {
+      normalAlert("warning", "Verifica si hay campos vacíos", 1500, "");
+
       return;
     }
 
-    // Validación del ID
-    if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-      normalAlert("warning", "Identificación no válida.", 1500, "");
-      return;
-    }
-
-    // Validación de nombres y apellidos
-    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜ ]{2,20}$/;
-    if (!nameRegex.test(names.value) || !nameRegex.test(lastname.value)) {
+    // Validación de descripción
+    if (description.length > 0 && description.length <= 50) {
       normalAlert(
         "warning",
-        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres.",
+        "El campo descripción debe tener mínimo 1 caracter y máximo 50",
         1500,
         ""
       );
-      return;
-    }
-    // Validación del teléfono y móvil
-    if (cellPhone.value <= 0 || !Number.isInteger(Number(cellPhone.value))) {
-      normalAlert("warning", "Teléfono no válido.", 1500, "");
+
       return;
     }
 
-    if (
-      phone.value &&
-      (phone.value <= 0 || !Number.isInteger(Number(phone.value)))
-    ) {
-      normalAlert("warning", "Móvil no válido.", 1500, "");
-      return;
-    }
-
-    // Validación de correo electrónico
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.value)) {
-      normalAlert("warning", "El correo electrónico no es válido.", 1500, "");
+    // Validación de las existencias
+    if (stock.value < 0 || !Number.isInteger(Number(stock.value))) {
+      normalAlert(
+        "warning",
+        "El campo existencias debe tener mínimo 0 como valor",
+        1500,
+        ""
+      );
       return;
     }
 
@@ -502,29 +408,25 @@
               );
 
               localStorage.setItem("token", "");
-            } else if (res[0].id_rol != 0 && res[0].id_rol != 1) {
+            } else if (res[0].id_rol != 0 && res[0].id_rol != 4) {
               normalAlert(
                 "error",
-                "Necesitas ser administrador para realizar esta acción",
+                "Necesitas ser dispensario para realizar esta acción",
                 1500,
                 ""
               );
             } else {
               // Envío de la solicitud fetch si todas las validaciones pasaron
-              fetch("http://localhost:3000/patient/update/" + id.value, {
+              fetch("http://localhost:3000/item/update/" + id.value, {
                 method: "PUT",
                 headers: {
                   Authorization: localStorage.getItem("token"),
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  nombres: names.value,
-                  apellidos: lastname.value,
-                  correo: email.value,
-                  telefono: cellPhone.value,
-                  movil: phone.value,
-                  fecha_nacimiento: birthDate.value,
-                  nit_eps: putEps.value,
+                  descripcion: description.value,
+                  existencia: stock.value,
+                  tipo: type.value,
                 }),
               })
                 .then((res) => res.json())
@@ -541,7 +443,7 @@
                   } else {
                     normalAlert(
                       "success",
-                      "Paciente editado correctamente",
+                      "Suministro editado correctamente",
                       1500,
                       ""
                     );
@@ -582,10 +484,10 @@
                 "./"
               );
               localStorage.setItem("token", "");
-            } else if (res[0].id_rol != 0 && res[0].id_rol != 1) {
+            } else if (res[0].id_rol != 0 && res[0].id_rol != 4) {
               normalAlert(
                 "error",
-                "Necesitas ser administrador para realizar esta acción",
+                "Necesitas ser dispensario para realizar esta acción",
                 1500,
                 ""
               );
@@ -593,14 +495,14 @@
               if (!document.querySelector("#deleteId").value) {
                 normalAlert(
                   "warning",
-                  "Llena el campo identificación",
+                  "Debe buscar primero un suministro",
                   1500,
                   ""
                 );
                 return;
               }
               fetch(
-                "http://localhost:3000/patient/status/" +
+                "http://localhost:3000/item/status/" +
                   document.querySelector("#deleteId").value,
                 {
                   method: "DELETE",

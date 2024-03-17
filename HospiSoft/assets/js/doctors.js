@@ -61,8 +61,7 @@
       },
     },
   };
-  let dataTable = $("#dataTable");
-  const bodyTable = document.querySelector("#bodyTable");
+
   const putId = document.querySelector("#putId");
   const deleteId = document.querySelector("#deleteId");
   async function getData() {
@@ -89,7 +88,7 @@
     try {
       // Esperar a que los datos estén disponibles antes de continuar
       const data = await getData();
-      bodyTable.innerHTML = "";
+      const bodyTable = document.querySelector("#bodyTable");
       const campos = [
         "identificacion",
         "nombres",
@@ -156,11 +155,36 @@
 
   async function loadTable() {
     if (await tableDownload()) {
-      dataTable = $("#dataTable").DataTable(dataTableOptions);
+      $("#dataTable").DataTable(dataTableOptions);
     }
   }
 
   loadTable();
+
+  const changeTable = () => {
+    document.querySelector("#containerTable").innerHTML = "";
+    document.querySelector("#containerTable").innerHTML = `<table
+    class="table table-bordered"
+    id="dataTable"
+    width="100%"
+    cellspacing="0"
+  >
+    <thead>
+      <tr>
+        <th>Identificación</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Especialidad</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="bodyTable"></tbody>
+  </table>`;
+
+    loadTable();
+  };
 
   async function fillData(id, condition) {
     try {
@@ -233,13 +257,13 @@
       !phone.value ||
       !email.value
     ) {
-      alert("Verifica si hay campos vacíos");
+      normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
       return;
     }
 
     // Validación del ID
     if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-      alert("Identificación no válida");
+      normalAlert("warning", "Identificación no válida.", 1500, "");
       return;
     }
 
@@ -247,22 +271,30 @@
     const nameRegex =
       /^[a-zA-ZáéíóúÁÉÍÓÚüÜ]{1,20}(?:[ ][a-zA-ZáéíóúÁÉÍÓÚüÜ]{1,20})?$/;
     if (!nameRegex.test(names.value) || !nameRegex.test(lastname.value)) {
-      alert(
-        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres."
+      normalAlert(
+        "warning",
+        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres.",
+        1500,
+        ""
       );
       return;
     }
 
     // Validación del teléfono
     if (phone.value <= 0 || !Number.isInteger(Number(phone.value))) {
-      alert("Teléfono no válido");
+      normalAlert("warning", "Teléfono no válido.", 1500, "");
       return;
     }
 
     // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.value)) {
-      alert("El correo electrónico ingresado no es válido.");
+      normalAlert(
+        "warning",
+        "El correo electrónico ingresado no es válido.",
+        1500,
+        ""
+      );
       return;
     }
 
@@ -347,8 +379,9 @@
                             "success",
                             "Doctor agregado correctamente",
                             1500,
-                            "reload"
+                            ""
                           );
+                          changeTable();
                         }
                       });
                   }
@@ -373,35 +406,43 @@
       !phone.value ||
       !email.value
     ) {
-      alert("Verifica si hay campos vacíos");
+      normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
       return;
     }
 
     // Validación del ID
     if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-      alert("Identificación no válida");
+      normalAlert("warning", "Identificación no válida.", 1500, "");
       return;
     }
 
     // Validación de nombres y apellidos
     const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜ ]{2,20}$/;
     if (!nameRegex.test(names.value) || !nameRegex.test(lastname.value)) {
-      alert(
-        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres."
+      normalAlert(
+        "warning",
+        "Los nombres y apellidos solo pueden contener letras, mínimo 2 y máximo 20 caracteres.",
+        1500,
+        ""
       );
       return;
     }
 
     // Validación del teléfono y móvil
     if (phone.value <= 0 || !Number.isInteger(Number(phone.value))) {
-      alert("Teléfono no válido");
+      normalAlert("warning", "Teléfono no válido.", 1500, "");
       return;
     }
 
     // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.value)) {
-      alert("El correo electrónico ingresado no es válido.");
+      normalAlert(
+        "warning",
+        "El correo electrónico ingresado no es válido.",
+        1500,
+        ""
+      );
       return;
     }
 
@@ -474,8 +515,9 @@
                       "success",
                       "Doctor editado correctamente",
                       1500,
-                      "reload"
+                      ""
                     );
+                    changeTable();
                   }
                 });
             }
@@ -520,6 +562,15 @@
                 ""
               );
             } else {
+              if (!document.querySelector("#deleteId").value) {
+                normalAlert(
+                  "warning",
+                  "Llena el campo identificación",
+                  1500,
+                  ""
+                );
+                return;
+              }
               fetch(
                 "http://localhost:3000/doctor/status/" +
                   document.querySelector("#deleteId").value,
@@ -547,8 +598,9 @@
                       "success",
                       "El estado ha sido cambiado correctamente",
                       1500,
-                      "reload"
+                      ""
                     );
+                    changeTable();
                   }
                 });
             }
