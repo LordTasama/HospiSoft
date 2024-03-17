@@ -1,0 +1,29 @@
+{
+  "name": "hospisoft",
+  "version": "1.0.0",
+  "description": "API para gestionar un hospital",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "Hospital",
+    "citas",
+    "formulas",
+    "medicos",
+    "pacientes",
+    "usuarios"
+  ],
+  "author": "LordTasama",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "js-sha256": "^0.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.9.1",
+    "nodemon": "^3.0.3",
+    "update": "^0.7.4"
+  }
+}
