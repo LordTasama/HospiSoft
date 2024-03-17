@@ -149,6 +149,7 @@ CREATE TABLE `item` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `descripcion` VARCHAR(200) NOT NULL,
   `existencia` INT NOT NULL,
+  `tipo` INT(1) NOT NULL,	
   `estado` INT(1) DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
