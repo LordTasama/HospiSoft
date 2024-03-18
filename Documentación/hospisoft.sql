@@ -1,3 +1,4 @@
+drop database hospisoft;
 CREATE DATABASE HospiSoft;
 USE HospiSoft;
 
@@ -53,7 +54,7 @@ CREATE TABLE EPS (
 );
 
 -- Inserciones a la tabla eps
-INSERT INTO eps 
+INSERT INTO `eps` 
 VALUES
 (900226715, 'COOSALUD EPS-S', 'ESS024 - EPS042', 'ESSC24 - EPSS42', 'AMBOS REGÍMENES'),
 (900156264, 'NUEVA EPS', 'EPS037 - EPSS41', 'EPSS37 - EPS041', 'AMBOS REGÍMENES'),
@@ -106,7 +107,7 @@ CREATE TABLE `usuario` (
 
 -- Inserción del usuario inicial (ACCESO TOTAL AL SISTEMA)
 
-INSERT INTO `usuario` VALUES(1,"María Elena","Restrepo","mariaelena@hotmail.com","b37b04d1088ce04b1330a78a4f399397ddbfcdea17f9e5692075ba640bf1e98a",0,DEFAULT);
+INSERT INTO `usuario` VALUES(1,"María Elena","Restrepo","mariaelena@hotmail.com","Elenita","b37b04d1088ce04b1330a78a4f399397ddbfcdea17f9e5692075ba640bf1e98a",0,DEFAULT);
 
 -- Contraseña: "elenaMaria123@"
 
@@ -123,7 +124,7 @@ CREATE TABLE `paciente` (
   `fecha_nacimiento` DATE NOT NULL,
   `nit_eps` INT(9) NOT NULL,
   `estado` INT(1) DEFAULT 1,
-  PRIMARY KEY (`identificacion`)
+  PRIMARY KEY (`identificacion`),
   CONSTRAINT FOREIGN KEY (`nit_eps`) REFERENCES eps(`nit`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -136,7 +137,7 @@ CREATE TABLE `medico` (
   `apellidos` VARCHAR(100) NOT NULL,
   `correo` VARCHAR(250) NOT NULL,
   `telefono` VARCHAR(20) NOT NULL,
-  `id_especialidad` VARCHAR(50) NOT NULL,
+  `id_especialidad` INT(2) NOT NULL,
   `estado` INT(1) DEFAULT 1,
   PRIMARY KEY (`identificacion`),
   CONSTRAINT FOREIGN KEY (`id_especialidad`) REFERENCES especialidad(`id`)
