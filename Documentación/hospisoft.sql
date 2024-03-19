@@ -107,7 +107,7 @@ CREATE TABLE `usuario` (
 
 -- Inserción del usuario inicial (ACCESO TOTAL AL SISTEMA)
 
-INSERT INTO `usuario` VALUES(1,"María Elena","Restrepo","mariaelena@hotmail.com","Elenita","b37b04d1088ce04b1330a78a4f399397ddbfcdea17f9e5692075ba640bf1e98a",0,DEFAULT);
+INSERT INTO `usuario` VALUES(1,"María Elena","Restrepo","Elenita","mariaelena@hotmail.com","b37b04d1088ce04b1330a78a4f399397ddbfcdea17f9e5692075ba640bf1e98a",0,DEFAULT);
 
 -- Contraseña: "elenaMaria123@"
 

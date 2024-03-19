@@ -33,3 +33,17 @@
   transition: 0.5s all ease;
   color: #00376b;
 }
+
+.btn-print {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+.btn-excel {
+  background-color: #008000 !important;
+  color: #ffffff !important;
+}
+
+.dt-buttons {
+  display: flex !important;
+  justify-content: end !important;
+}

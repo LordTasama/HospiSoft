@@ -30,6 +30,26 @@
       },
     },
 
+    layout: {
+      topCenter: {
+        buttons: [
+          {
+            extend: "excel",
+
+            className: "btn-excel",
+          },
+          {
+            extend: "print",
+            text: '<span">Imprimir</span>',
+            className: "btn-print",
+          },
+        ],
+      },
+      dom:
+        "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+        "<'row'<'col-sm-12'tr>>" +
+        "<'row'<'col-sm-5'l><'col-sm-7'p>>",
+    },
     columnDefs: [
       {
         responsivePriority: 1,
@@ -89,6 +109,7 @@
   const putEps = document.querySelector("#putEps");
   const putId = document.querySelector("#putId");
   const deleteId = document.querySelector("#deleteId");
+
   fillSelects(postEps, putEps);
   async function getData() {
     try {
@@ -158,7 +179,7 @@
 
   async function loadTable() {
     if (await tableDownload()) {
-      $("#dataTable").DataTable(dataTableOptions);
+      table = $("#dataTable").DataTable(dataTableOptions);
     }
   }
 
