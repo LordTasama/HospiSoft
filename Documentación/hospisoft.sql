@@ -1,4 +1,3 @@
-drop database hospisoft;
 CREATE DATABASE HospiSoft;
 USE HospiSoft;
 
