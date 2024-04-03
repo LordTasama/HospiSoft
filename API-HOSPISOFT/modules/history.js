@@ -3,7 +3,7 @@ const historiaClinicaRouter = express.Router();
 const cnx = require("./bdata");
 
 // Ruta para obtener la lista de historias clínicas
-historiaClinicaRouter.get("/historiaclinica/list", (req, res) => {
+historiaClinicaRouter.get("/history/list", (req, res) => {
   // Consulta SQL para obtener todas las historias clínicas
   const query = "SELECT * FROM historiasclinicas";
 
@@ -25,7 +25,7 @@ historiaClinicaRouter.get("/historiaclinica/list", (req, res) => {
 });
 
 // Ruta para obtener una historia clínica por su ID
-historiaClinicaRouter.get("/historiaclinica/find/:id", (req, res) => {
+historiaClinicaRouter.get("/history/find/:id", (req, res) => {
   // Obtener el ID de la historia clínica de los parámetros de la solicitud
   const id = req.params.id;
 
@@ -50,7 +50,7 @@ historiaClinicaRouter.get("/historiaclinica/find/:id", (req, res) => {
 });
 
 // Ruta para crear una nueva historia clínica
-historiaClinicaRouter.post("/historiaclinica/create", (req, res) => {
+historiaClinicaRouter.post("/history/create", (req, res) => {
   // Obtener los datos de la historia clínica de la solicitud
   const formData = req.body;
 
@@ -78,7 +78,7 @@ historiaClinicaRouter.post("/historiaclinica/create", (req, res) => {
 });
 
 // Ruta para actualizar una historia clínica existente
-historiaClinicaRouter.put("/historiaclinica/update/:id", (req, res) => {
+historiaClinicaRouter.put("/history/update/:id", (req, res) => {
   // Obtener los datos actualizados de la historia clínica de la solicitud
   const formData = req.body;
   const id = req.params.id;

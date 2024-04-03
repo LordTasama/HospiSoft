@@ -449,6 +449,7 @@
                     href="#"
                     data-toggle="modal"
                     data-target="#editDoctor"
+                    id="btnEdit"
                   >
                     Editar
                   </a>
@@ -571,65 +572,95 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form>
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Agregar historia clínica</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-            
-                <div class="modal-body">
-                    <label for="postId" class="form-label mb-0">ID Paciente</label>
-                    <input type="number" id="postId" class="form-control" />
-                    
-                    <label for="postMedic" class="form-label mb-0 mt-2">ID Médico</label>
-                    <input type="number" id="postMedic" class="form-control" />
-                    
-                    <label for="postDate" class="form-label mb-0 mt-2">Fecha de Creación</label>
-                    <input type="date" id="postDate" class="form-control" />
-                    
-                    <label for="postReason" class="form-label mb-0 mt-2">Motivo de Consulta</label>
-                    <input type="text" id="postReason" class="form-control" />
-                    
-                    <label for="postPrevIllness" class="form-label mb-0 mt-2">Enfermedades Previas</label>
-                    <input type="text" id="postPrevIllness" class="form-control" />
-                    
-                    <label for="postAllergies" class="form-label mb-0 mt-2">Alergias</label>
-                    <input type="text" id="postAllergies" class="form-control" />
-                    
-                    <label for="postPrevMeds" class="form-label mb-0 mt-2">Medicamentos Previos</label>
-                    <input type="text" id="postPrevMeds" class="form-control" />
-                    
-                    <label for="postPhysicalExam" class="form-label mb-0 mt-2">Examen Físico</label>
-                    <input type="text" id="postPhysicalExam" class="form-control" />
-                    
-                    <label for="postDiagnosis" class="form-label mb-0 mt-2">Diagnóstico</label>
-                    <input type="text" id="postDiagnosis" class="form-control" />
-                    
-                    <label for="postTreatment" class="form-label mb-0 mt-2">Tratamiento</label>
-                    <input type="text" id="postTreatment" class="form-control" />
-                    
-                    <label for="postObservations" class="form-label mb-0 mt-2">Observaciones</label>
-                    <input type="text" id="postObservations" class="form-control" />
-                    
-                    <label for="postState" class="form-label mb-0 mt-2">Estado</label>
-                    <select id="postState" class="form-control">
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
-                </div>
-            
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">
-                        Cancelar
-                    </button>
-                    <button class="btn btn-success" type="button" id="btnAdd">
-                        Agregar
-                    </button>
-                </div>
-            </form>
-            
+          <form>
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Agregar historia clínica
+              </h5>
+              <button
+                class="close"
+                type="button"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <label for="postId" class="form-label mb-0">ID Paciente</label>
+              <input type="number" id="postId" class="form-control" />
+
+              <label for="postMedic" class="form-label mb-0 mt-2"
+                >ID Médico</label
+              >
+              <input type="number" id="postMedic" class="form-control" />
+
+              <label for="postDate" class="form-label mb-0 mt-2"
+                >Fecha de Creación</label
+              >
+              <input type="date" id="postDate" class="form-control" />
+
+              <label for="postReason" class="form-label mb-0 mt-2"
+                >Motivo de Consulta</label
+              >
+              <input type="text" id="postReason" class="form-control" />
+
+              <label for="postPrevIllness" class="form-label mb-0 mt-2"
+                >Enfermedades Previas</label
+              >
+              <input type="text" id="postPrevIllness" class="form-control" />
+
+              <label for="postAllergies" class="form-label mb-0 mt-2"
+                >Alergias</label
+              >
+              <input type="text" id="postAllergies" class="form-control" />
+
+              <label for="postPrevMeds" class="form-label mb-0 mt-2"
+                >Medicamentos Previos</label
+              >
+              <input type="text" id="postPrevMeds" class="form-control" />
+
+              <label for="postPhysicalExam" class="form-label mb-0 mt-2"
+                >Examen Físico</label
+              >
+              <input type="text" id="postPhysicalExam" class="form-control" />
+
+              <label for="postDiagnosis" class="form-label mb-0 mt-2"
+                >Diagnóstico</label
+              >
+              <input type="text" id="postDiagnosis" class="form-control" />
+
+              <label for="postTreatment" class="form-label mb-0 mt-2"
+                >Tratamiento</label
+              >
+              <input type="text" id="postTreatment" class="form-control" />
+
+              <label for="postObservations" class="form-label mb-0 mt-2"
+                >Observaciones</label
+              >
+              <input type="text" id="postObservations" class="form-control" />
+
+              <label for="postState" class="form-label mb-0 mt-2">Estado</label>
+              <select id="postState" class="form-control">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                class="btn btn-secondary"
+                type="button"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button class="btn btn-success" type="button" id="btnAdd">
+                Agregar
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -645,65 +676,95 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form>
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Editar historia clínica</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-            
-                <div class="modal-body">
-                    <label for="postId" class="form-label mb-0">ID Paciente</label>
-                    <input type="number" id="postId" class="form-control" />
-                    
-                    <label for="postMedic" class="form-label mb-0 mt-2">ID Médico</label>
-                    <input type="number" id="postMedic" class="form-control" />
-                    
-                    <label for="postDate" class="form-label mb-0 mt-2">Fecha de Creación</label>
-                    <input type="date" id="postDate" class="form-control" />
-                    
-                    <label for="postReason" class="form-label mb-0 mt-2">Motivo de Consulta</label>
-                    <input type="text" id="postReason" class="form-control" />
-                    
-                    <label for="postPrevIllness" class="form-label mb-0 mt-2">Enfermedades Previas</label>
-                    <input type="text" id="postPrevIllness" class="form-control" />
-                    
-                    <label for="postAllergies" class="form-label mb-0 mt-2">Alergias</label>
-                    <input type="text" id="postAllergies" class="form-control" />
-                    
-                    <label for="postPrevMeds" class="form-label mb-0 mt-2">Medicamentos Previos</label>
-                    <input type="text" id="postPrevMeds" class="form-control" />
-                    
-                    <label for="postPhysicalExam" class="form-label mb-0 mt-2">Examen Físico</label>
-                    <input type="text" id="postPhysicalExam" class="form-control" />
-                    
-                    <label for="postDiagnosis" class="form-label mb-0 mt-2">Diagnóstico</label>
-                    <input type="text" id="postDiagnosis" class="form-control" />
-                    
-                    <label for="postTreatment" class="form-label mb-0 mt-2">Tratamiento</label>
-                    <input type="text" id="postTreatment" class="form-control" />
-                    
-                    <label for="postObservations" class="form-label mb-0 mt-2">Observaciones</label>
-                    <input type="text" id="postObservations" class="form-control" />
-                    
-                    <label for="postState" class="form-label mb-0 mt-2">Estado</label>
-                    <select id="postState" class="form-control">
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
-                </div>
-            
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">
-                        Cancelar
-                    </button>
-                    <button class="btn btn-success" type="button" id="btnAdd">
-                        Agregar
-                    </button>
-                </div>
-            </form>
-            
+          <form>
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Editar historia clínica
+              </h5>
+              <button
+                class="close"
+                type="button"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <label for="postId" class="form-label mb-0">ID Paciente</label>
+              <input type="number" id="postId" class="form-control" />
+
+              <label for="postMedic" class="form-label mb-0 mt-2"
+                >ID Médico</label
+              >
+              <input type="number" id="postMedic" class="form-control" />
+
+              <label for="postDate" class="form-label mb-0 mt-2"
+                >Fecha de Creación</label
+              >
+              <input type="date" id="postDate" class="form-control" />
+
+              <label for="postReason" class="form-label mb-0 mt-2"
+                >Motivo de Consulta</label
+              >
+              <input type="text" id="postReason" class="form-control" />
+
+              <label for="postPrevIllness" class="form-label mb-0 mt-2"
+                >Enfermedades Previas</label
+              >
+              <input type="text" id="postPrevIllness" class="form-control" />
+
+              <label for="postAllergies" class="form-label mb-0 mt-2"
+                >Alergias</label
+              >
+              <input type="text" id="postAllergies" class="form-control" />
+
+              <label for="postPrevMeds" class="form-label mb-0 mt-2"
+                >Medicamentos Previos</label
+              >
+              <input type="text" id="postPrevMeds" class="form-control" />
+
+              <label for="postPhysicalExam" class="form-label mb-0 mt-2"
+                >Examen Físico</label
+              >
+              <input type="text" id="postPhysicalExam" class="form-control" />
+
+              <label for="postDiagnosis" class="form-label mb-0 mt-2"
+                >Diagnóstico</label
+              >
+              <input type="text" id="postDiagnosis" class="form-control" />
+
+              <label for="postTreatment" class="form-label mb-0 mt-2"
+                >Tratamiento</label
+              >
+              <input type="text" id="postTreatment" class="form-control" />
+
+              <label for="postObservations" class="form-label mb-0 mt-2"
+                >Observaciones</label
+              >
+              <input type="text" id="postObservations" class="form-control" />
+
+              <label for="postState" class="form-label mb-0 mt-2">Estado</label>
+              <select id="postState" class="form-control">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                class="btn btn-secondary"
+                type="button"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button class="btn btn-success" type="button" id="btnAdd">
+                Agregar
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -792,6 +853,6 @@
     <!-- Page level custom scripts -->
     <script src="./assets/js/alerts.js"></script>
     <script src="./assets/js/login.js"></script>
-    <script src="./assets/js/history.js"></script>
+    <script src="./assets/js/histories.js"></script>
   </body>
 </html>

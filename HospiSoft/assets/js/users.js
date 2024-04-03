@@ -487,8 +487,9 @@
 
     // Validación de contraseña
     if (password.value) {
+      console.log(password.value);
       const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[-zA-Z\d!@#$%^&*]{8,}$/;
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
       if (!passwordRegex.test(password.value)) {
         normalAlert(
           "warning",

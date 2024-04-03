@@ -260,7 +260,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`identificacion`, `nombres`, `apellidos`, `username`, `correo`, `password`, `id_rol`, `estado`) VALUES
-(1, 'María Elena', 'Restrepo', 'Elenita', 'mariaelena@hotmail.com', 'b37b04d1088ce04b1330a78a4f399397ddbfcdea17f9e5692075ba640bf1e98a', 0, 1),
+(1, 'María Elena', 'Restrepo',  'mariaelena@hotmail.com','Elenita', 'b37b04d1088ce04b1330a78a4f399397ddbfcdea17f9e5692075ba640bf1e98a', 0, 1),
 (11, 'alejo', 'tobon', 'alejots', 'alejo@gmail.com', '123', 1, 1);
 
 --

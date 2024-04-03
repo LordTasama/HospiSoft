@@ -10,7 +10,7 @@ const prescription = require("./modules/prescription");
 const auth = require("./modules/auth");
 const token = require("./modules/token");
 const login = require("./modules/login");
-
+const history = require("./modules/history");
 // Crea una aplicación Express
 const app = express();
 
@@ -34,6 +34,6 @@ app.use("/", auth, doctor);
 app.use("/", auth, item);
 app.use("/", auth, appointment);
 app.use("/", auth, prescription);
-
+app.use("/", auth, history);
 // Escucha las solicitudes en el puerto definido
 app.listen(port, () => {});
