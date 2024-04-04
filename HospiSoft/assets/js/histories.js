@@ -46,11 +46,12 @@
     ],
     order: [],
     language: {
-      lengthMenu: "Mostrar _MENU_ médicos por página",
-      zeroRecords: "Ningún médico encontrado",
-      info: "Mostrando _START_ a _END_ médicos de _TOTAL_ ",
-      infoEmpty: "Ningún médico encontrado",
-      infoFiltered: "(filtrados desde _MAX_ médicos totales)",
+      lengthMenu: "Mostrar _MENU_ historias clínicas por página",
+      zeroRecords: "Ninguna historia clínica encontrada",
+      info: "Mostrando _START_ a _END_ historias clínicas de _TOTAL_ ",
+      infoEmpty: "Ninguna historia clínica encontrada",
+      emptyTable: "Sin datos para mostrar",
+      infoFiltered: "(filtrados desde _MAX_ historias clínicas totales)",
       search: "Buscar:",
       loadingRecords: "Cargando...",
       paginate: {
@@ -62,6 +63,7 @@
     },
   };
 
+  const putId = document.querySelector("#putId");
   const deleteId = document.querySelector("#deleteId");
 
   async function getData() {
@@ -89,7 +91,21 @@
       // Esperar a que los datos estén disponibles antes de continuar
       const data = await getData();
       const bodyTable = document.querySelector("#bodyTable");
-      const campos = ["id", "patient_name", "date", "condition"];
+      const campos = [
+        "id",
+        "id_paciente",
+        "id_medico",
+        "fecha_creacion",
+        "motivo_consulta",
+        "enfermedades_previas",
+        "alergias",
+        "medicamentos_previos",
+        "examen_fisico",
+        "diagnostico",
+        "tratamiento",
+        "observaciones",
+        "estado",
+      ];
 
       for (i = 0; i < data.length; i++) {
         let row = document.createElement("tr");
@@ -97,6 +113,10 @@
         for (j = 0; j < campos.length; j++) {
           column = document.createElement("td");
           column.textContent = data[i][campos[j]];
+          if (j == 12) {
+            column.textContent =
+              data[i][campos[j]] == 1 ? "Activo" : "Inactivo";
+          }
           row.appendChild(column);
         }
         bodyTable.appendChild(row);
@@ -119,45 +139,71 @@
   loadTable();
 
   const changeTable = () => {
-    document.querySelector("#containerTable").innerHTML = "";
-    document.querySelector("#containerTable").innerHTML = `<table
-        class="table table-bordered"
-        id="dataTable"
-        width="100%"
-        cellspacing="0"
-      >
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre del Paciente</th>
-            <th>Fecha</th>
-            <th>Condición</th>
-          </tr>
-        </thead>
-        <tbody id="bodyTable"></tbody>
-      </table>`;
+    document.querySelector("#containerTable").innerHTML = ` <table
+    class="table table-bordered"
+    id="dataTable"
+    width="100%"
+    cellspacing="0"
+  >
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ID Paciente</th>
+        <th>ID Médico</th>
+        <th>Fecha de Creación</th>
+        <th>Motivo de Consulta</th>
+        <th>Enfermedades Previas</th>
+        <th>Alergias</th>
+        <th>Medicamentos Previos</th>
+        <th>Examen Físico</th>
+        <th>Diagnóstico</th>
+        <th>Tratamiento</th>
+        <th>Observaciones</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="bodyTable"></tbody>
+  </table>`;
 
     loadTable();
   };
 
-  async function fillData(id) {
+  async function fillData(id, condition) {
     try {
-      const response = await fetch(
-        "http://localhost:3000/history/find/id" + id,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("http://localhost:3000/history/find/" + id, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         throw new Error("Error al obtener los datos");
       }
       const data = await response.json();
       const deleteFullName = document.querySelector("#deleteFullName");
-      if (data) {
-        deleteFullName.innerHTML = `¿Estás seguro que deseas cambiar el estado de ${data.patient_name}?`;
+      if (condition == 0 && condition != 1) {
+        if (data.id_paciente) {
+          document.querySelector("#putIdPatient").value = data.id_paciente;
+          document.querySelector("#putIdDoctor").value = data.id_medico;
+          document.querySelector("#putReason").value = data.motivo_consulta;
+          document.querySelector("#putPrevIllnesses").value =
+            data.enfermedades_previas;
+          document.querySelector("#putAllergies").value = data.alergias;
+          document.querySelector("#putPrevMeds").value =
+            data.medicamentos_previos;
+          document.querySelector("#putPhysicalExam").value = data.examen_fisico;
+          document.querySelector("#putDiagnosis").value = data.diagnostico;
+          document.querySelector("#putTreatment").value = data.tratamiento;
+          document.querySelector("#putObservations").value = data.observaciones;
+        } else {
+          deleteFullName.innerHTML = "";
+          normalAlert("info", "Ningún dato encontrado", 500, "");
+        }
+        return;
+      }
+
+      if (data.id_paciente) {
+        deleteFullName.innerHTML = `¿Estás seguro que deseas cambiar el estado de esta historia clínica?`;
       } else {
         deleteFullName.innerHTML = "";
         normalAlert("info", "Ningún dato encontrado", 500, "");
@@ -167,450 +213,260 @@
       throw error; // Propagar el error para manejarlo en un nivel superior si es necesario
     }
   }
-})();
 
-document.querySelector("#btnSearchDelete").addEventListener("click", () => {
-  if (deleteId.value) {
-    fillData(deleteId.value, 1);
-  }
-});
+  document.querySelector("#btnSearchPut").addEventListener("click", () => {
+    if (putId.value) {
+      fillData(putId.value, 0);
+    }
+  });
 
-const postMethod = document.querySelector("#btnAdd");
-const editMethod = document.querySelector("#btnEdit");
-const deleteMethod = document.querySelector("#btnDelete");
+  document.querySelector("#btnSearchDelete").addEventListener("click", () => {
+    if (deleteId.value) {
+      fillData(deleteId.value, 1);
+    }
+  });
 
-postMethod.addEventListener("click", () => {
-  const id = document.querySelector("#postId");
-  const patientId = document.querySelector("#postPatientId");
-  const doctorId = document.querySelector("#postDoctorId");
-  const creationDate = document.querySelector("#postCreationDate");
-  const reason = document.querySelector("#postReason");
-  const prevIllnesses = document.querySelector("#postPrevIllnesses");
-  const allergies = document.querySelector("#postAllergies");
-  const prevMedications = document.querySelector("#postPrevMedications");
-  const physicalExam = document.querySelector("#postPhysicalExam");
-  const diagnosis = document.querySelector("#postDiagnosis");
-  const treatment = document.querySelector("#postTreatment");
-  const observations = document.querySelector("#postObservations");
+  const postMethod = document.querySelector("#btnAdd");
+  const editMethod = document.querySelector("#btnEdit");
+  const deleteMethod = document.querySelector("#btnDelete");
 
-  if (
-    !id.value ||
-    !patientId.value ||
-    !doctorId.value ||
-    !creationDate.value ||
-    !reason.value ||
-    !prevIllnesses.value ||
-    !allergies.value ||
-    !prevMedications.value ||
-    !physicalExam.value ||
-    !diagnosis.value ||
-    !treatment.value ||
-    !observations.value
-  ) {
-    normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
-    return;
-  }
+  postMethod.addEventListener("click", () => {
+    const patientId = document.querySelector("#postIdPatient");
+    const doctorId = document.querySelector("#postIdDoctor");
+    const reason = document.querySelector("#postReason");
+    const prevIllnesses = document.querySelector("#postPrevIllnesses");
+    const allergies = document.querySelector("#postAllergies");
+    const prevMedications = document.querySelector("#postPrevMeds");
+    const physicalExam = document.querySelector("#postPhysicalExam");
+    const diagnosis = document.querySelector("#postDiagnosis");
+    const treatment = document.querySelector("#postTreatment");
+    const observations = document.querySelector("#postObservations");
 
-  // Validación del ID
-  if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-    normalAlert("warning", "Identificación no válida.", 1500, "");
-    return;
-  }
+    if (
+      !patientId.value ||
+      !doctorId.value ||
+      !reason.value ||
+      !prevIllnesses.value ||
+      !allergies.value ||
+      !prevMedications.value ||
+      !physicalExam.value ||
+      !diagnosis.value ||
+      !treatment.value ||
+      !observations.value
+    ) {
+      normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
+      return;
+    }
 
-  fetch("http://localhost:3000/history/find/" + id.value, {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.length > 0) {
-        if (res[0].id) {
-          normalAlert("error", "La historia clínica ya existe", 1500, "");
+    // Validación de los ID
+    if (patientId.value <= 0 || !Number.isInteger(Number(patientId.value))) {
+      normalAlert("warning", "Id del paciente no válida.", 1500, "");
+      return;
+    }
+    if (doctorId.value <= 0 || !Number.isInteger(Number(doctorId.value))) {
+      normalAlert("warning", "Id del médico no válida.", 1500, "");
+      return;
+    }
+
+    // Envío de la solicitud fetch si todas las validaciones pasaron
+    fetch("http://localhost:3000/history/create/", {
+      method: "POST",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id_paciente: patientId.value,
+        id_medico: doctorId.value,
+        fecha_creacion: "",
+        motivo_consulta: reason.value,
+        enfermedades_previas: prevIllnesses.value,
+        alergias: allergies.value,
+        medicamentos_previos: prevMedications.value,
+        examen_fisico: physicalExam.value,
+        diagnostico: diagnosis.value,
+        tratamiento: treatment.value,
+        observaciones: observations.value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.status == "error") {
+          normalAlert(
+            "error",
+            "La sesión expiró o algo ocurrió... Intenta iniciar sesión de nuevo",
+            1500,
+            "./"
+          );
+        } else {
+          normalAlert(
+            "success",
+            "Historia clínica agregada correctamente",
+            1500,
+            ""
+          );
+          changeTable();
         }
-      } else {
-        // Envío de la solicitud fetch si todas las validaciones pasaron
-        fetch("http://localhost:3000/history/create/", {
-          method: "POST",
-          headers: {
-            Authorization: localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id.value,
-            patientId: patientId.value,
-            doctorId: doctorId.value,
-            creationDate: creationDate.value,
-            reason: reason.value,
-            prevIllnesses: prevIllnesses.value,
-            allergies: allergies.value,
-            prevMedications: prevMedications.value,
-            physicalExam: physicalExam.value,
-            diagnosis: diagnosis.value,
-            treatment: treatment.value,
-            observations: observations.value,
-          }),
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            if (res.status == "error") {
-              normalAlert(
-                "error",
-                "La sesión expiró o algo ocurrió... Intenta iniciar sesión de nuevo",
-                1500,
-                "./"
-              );
-            } else {
-              normalAlert(
-                "success",
-                "Historia clínica agregada correctamente",
-                1500,
-                ""
-              );
-              changeTable();
-            }
-          });
-      }
-    });
-});
+      });
+  });
 
-editMethod.addEventListener("click", () => {
-  const id = document.querySelector("#putId");
-  const patientId = document.querySelector("#putPatientId");
-  const doctorId = document.querySelector("#putDoctorId");
-  const creationDate = document.querySelector("#putCreationDate");
-  const reason = document.querySelector("#putReason");
-  const prevIllnesses = document.querySelector("#putPrevIllnesses");
-  const allergies = document.querySelector("#putAllergies");
-  const prevMedications = document.querySelector("#putPrevMedications");
-  const physicalExam = document.querySelector("#putPhysicalExam");
-  const diagnosis = document.querySelector("#putDiagnosis");
-  const treatment = document.querySelector("#putTreatment");
-  const observations = document.querySelector("#putObservations");
+  editMethod.addEventListener("click", () => {
+    const putId = document.querySelector("#putId");
+    const patientId = document.querySelector("#putIdPatient");
+    const doctorId = document.querySelector("#putIdDoctor");
+    const reason = document.querySelector("#putReason");
+    const prevIllnesses = document.querySelector("#putPrevIllnesses");
+    const allergies = document.querySelector("#putAllergies");
+    const prevMedications = document.querySelector("#putPrevMeds");
+    const physicalExam = document.querySelector("#putPhysicalExam");
+    const diagnosis = document.querySelector("#putDiagnosis");
+    const treatment = document.querySelector("#putTreatment");
+    const observations = document.querySelector("#putObservations");
 
-  if (
-    !id.value ||
-    !patientId.value ||
-    !doctorId.value ||
-    !creationDate.value ||
-    !reason.value ||
-    !prevIllnesses.value ||
-    !allergies.value ||
-    !prevMedications.value ||
-    !physicalExam.value ||
-    !diagnosis.value ||
-    !treatment.value ||
-    !observations.value
-  ) {
-    normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
-    return;
-  }
+    if (
+      !putId.value ||
+      !patientId.value ||
+      !doctorId.value ||
+      !reason.value ||
+      !prevIllnesses.value ||
+      !allergies.value ||
+      !prevMedications.value ||
+      !physicalExam.value ||
+      !diagnosis.value ||
+      !treatment.value ||
+      !observations.value
+    ) {
+      normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
+      return;
+    }
 
-  // Validación del ID
-  if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-    normalAlert("warning", "Identificación no válida.", 1500, "");
-    return;
-  }
+    // Validación de los ID
+    if (patientId.value <= 0 || !Number.isInteger(Number(patientId.value))) {
+      normalAlert("warning", "Id del paciente no válida.", 1500, "");
+      return;
+    }
+    if (doctorId.value <= 0 || !Number.isInteger(Number(doctorId.value))) {
+      normalAlert("warning", "Id del médico no válida.", 1500, "");
+      return;
+    }
 
-  fetch("http://localhost:3000/history/find/" + id.value, {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.length > 0) {
-        // Envío de la solicitud fetch si todas las validaciones pasaron
-        fetch("http://localhost:3000/history/update/" + id.value, {
-          method: "PUT",
-          headers: {
-            Authorization: localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            patientId: patientId.value,
-            doctorId: doctorId.value,
-            creationDate: creationDate.value,
-            reason: reason.value,
-            prevIllnesses: prevIllnesses.value,
-            allergies: allergies.value,
-            prevMedications: prevMedications.value,
-            physicalExam: physicalExam.value,
-            diagnosis: diagnosis.value,
-            treatment: treatment.value,
-            observations: observations.value,
-          }),
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            if (res.status == "error") {
-              normalAlert(
-                "error",
-                "La sesión expiró o algo ocurrió... Intenta iniciar sesión de nuevo",
-                1500,
-                "./"
-              );
-            } else if (res.status == "non-existent") {
-              normalAlert("info", res.message, 1500, "");
-            } else {
-              normalAlert(
-                "success",
-                "Historia clínica editada correctamente",
-                1500,
-                ""
-              );
-              changeTable();
-            }
-          });
-      } else {
-        normalAlert("info", "Ninguna historia clínica encontrada", 1500, "");
-      }
-    });
-});
-
-deleteMethod.addEventListener("click", () => {
-  const id = document.querySelector("#deleteId");
-
-  if (!id.value) {
-    normalAlert("warning", "Llena el campo identificación", 1500, "");
-    return;
-  }
-
-  fetch("http://localhost:3000/history/delete/" + id.value, {
-    method: "DELETE",
-    headers: {
-      Authorization: localStorage.getItem("token"),
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.status == "error") {
-        normalAlert(
-          "error",
-          "La sesión expiró o algo ocurrió... Intenta iniciar sesión de nuevo",
-          1500,
-          "./"
-        );
-      } else if (res.status == "non-existent") {
-        normalAlert("info", res.message, 1500, "");
-      } else {
-        normalAlert(
-          "success",
-          "La historia clínica ha sido eliminada correctamente",
-          1500,
-          ""
-        );
-        changeTable();
-      }
-    });
-});
-
-editMethod.addEventListener("click", () => {
-  const id = document.querySelector("#putId");
-  const pacienteId = document.querySelector("#putPacienteId");
-  const medicoId = document.querySelector("#putMedicoId");
-  const fecha = document.querySelector("#putFecha");
-  const motivoConsulta = document.querySelector("#putMotivoConsulta");
-  const enfermedadesPrevias = document.querySelector("#putEnfermedadesPrevias");
-  const alergias = document.querySelector("#putAlergias");
-  const medicamentosPrevios = document.querySelector("#putMedicamentosPrevios");
-  const examenFisico = document.querySelector("#putExamenFisico");
-  const diagnostico = document.querySelector("#putDiagnostico");
-  const tratamiento = document.querySelector("#putTratamiento");
-  const observaciones = document.querySelector("#putObservaciones");
-  const estado = document.querySelector("#putEstado");
-
-  // Validación de campos vacíos
-  if (
-    !id.value ||
-    !pacienteId.value ||
-    !medicoId.value ||
-    !fecha.value ||
-    !motivoConsulta.value ||
-    !enfermedadesPrevias.value ||
-    !alergias.value ||
-    !medicamentosPrevios.value ||
-    !examenFisico.value ||
-    !diagnostico.value ||
-    !tratamiento.value ||
-    !observaciones.value ||
-    !estado.value
-  ) {
-    normalAlert("warning", "Verifica si hay campos vacíos.", 1500, "");
-    return;
-  }
-
-  // Validación de ID
-  if (id.value <= 0 || !Number.isInteger(Number(id.value))) {
-    normalAlert("warning", "ID no válido.", 1500, "");
-    return;
-  }
-
-  // Validación de fecha (puedes agregar tu propia validación aquí)
-
-  fetch("http://localhost:3000/user/login/status", {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-      "Content-type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      fetch(
-        "http://localhost:3000/user/find/" +
-          res.respuesta.identificacion +
-          "/---",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
+    // Envío de la solicitud fetch si todas las validaciones pasaron
+    fetch("http://localhost:3000/history/update/" + putId.value, {
+      method: "PUT",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id_paciente: patientId.value,
+        id_medico: doctorId.value,
+        motivo_consulta: reason.value,
+        enfermedades_previas: prevIllnesses.value,
+        alergias: allergies.value,
+        medicamentos_previos: prevMedications.value,
+        examen_fisico: physicalExam.value,
+        diagnostico: diagnosis.value,
+        tratamiento: treatment.value,
+        observaciones: observations.value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.status == "error") {
+          normalAlert(
+            "error",
+            "La sesión expiró o algo ocurrió... Intenta iniciar sesión de nuevo",
+            1500,
+            "./"
+          );
+        } else {
+          normalAlert(
+            "success",
+            "Historia clínica editada correctamente",
+            1500,
+            ""
+          );
+          changeTable();
         }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          if (res[0].estado == 0) {
-            normalAlert(
-              "error",
-              "No puedes hacer eso ya que su estado actual es inactivo",
-              1500,
-              "./"
-            );
+      });
+  });
 
-            localStorage.setItem("token", "");
-          } else if (res[0].id_rol != 0 && res[0].id_rol != 1) {
-            normalAlert(
-              "error",
-              "Necesitas ser administrador para realizar esta acción",
-              1500,
-              ""
-            );
-          } else {
-            // Envío de la solicitud fetch si todas las validaciones pasaron
-            fetch("http://localhost:3000/history/update/" + id.value, {
-              method: "PUT",
-              headers: {
-                Authorization: localStorage.getItem("token"),
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                id_paciente: pacienteId.value,
-                id_medico: medicoId.value,
-                fecha_creacion: fecha.value,
-                motivo_consulta: motivoConsulta.value,
-                enfermedades_previas: enfermedadesPrevias.value,
-                alergias: alergias.value,
-                medicamentos_previos: medicamentosPrevios.value,
-                examen_fisico: examenFisico.value,
-                diagnostico: diagnostico.value,
-                tratamiento: tratamiento.value,
-                observaciones: observaciones.value,
-                estado: estado.value,
-              }),
-            })
-              .then((res) => res.json())
-              .then((res) => {
-                if (res.status == "error") {
-                  normalAlert(
-                    "error",
-                    "La sesión espiró o algo ocurrió... Intenta iniciar sesión de nuevo",
-                    1500,
-                    "./"
-                  );
-                } else if (res.status == "non-existent") {
-                  normalAlert("info", res.message, 1500, "");
-                } else {
-                  normalAlert(
-                    "success",
-                    "Historia clínica editada correctamente",
-                    1500,
-                    ""
-                  );
-                  changeTable();
-                }
-              });
+  deleteMethod.addEventListener("click", () => {
+    fetch("http://localhost:3000/user/login/status", {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        fetch(
+          "http://localhost:3000/user/find/" +
+            res.respuesta.identificacion +
+            "/---",
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+              "Content-Type": "application/json",
+            },
           }
-        });
-    });
-});
-deleteMethod.addEventListener("click", () => {
-  fetch("http://localhost:3000/user/login/status", {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-      "Content-type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      fetch(
-        "http://localhost:3000/user/find/" +
-          res.respuesta.identificacion +
-          "/---",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          if (res[0].estado == 0) {
-            normalAlert(
-              "error",
-              "No puedes hacer eso ya que su estado actual es inactivo",
-              1500,
-              "./"
-            );
-            localStorage.setItem("token", "");
-          } else if (res[0].id_rol != 0 && res[0].id_rol != 1) {
-            normalAlert(
-              "error",
-              "Necesitas ser administrador para realizar esta acción",
-              1500,
-              ""
-            );
-          } else {
-            if (!document.querySelector("#deleteId").value) {
-              normalAlert("warning", "Llena el campo identificación", 1500, "");
-              return;
-            }
-            fetch(
-              "http://localhost:3000/history/delete/" +
-                document.querySelector("#deleteId").value,
-              {
-                method: "DELETE",
-                headers: {
-                  Authorization: localStorage.getItem("token"),
-                  "Content-Type": "application/json",
-                },
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            if (res[0].estado == 0) {
+              normalAlert(
+                "error",
+                "No puedes hacer eso ya que su estado actual es inactivo",
+                1500,
+                "./"
+              );
+              localStorage.setItem("token", "");
+            } else if (res[0].id_rol != 0 && res[0].id_rol != 1) {
+              normalAlert(
+                "error",
+                "Necesitas ser administrador para realizar esta acción",
+                1500,
+                ""
+              );
+            } else {
+              if (!document.querySelector("#deleteId").value) {
+                normalAlert("warning", "Llena el campo Id", 1500, "");
+                return;
               }
-            )
-              .then((res) => res.json())
-              .then((res) => {
-                if (res.status == "error") {
-                  normalAlert(
-                    "error",
-                    "La sesión expiró o algo ocurrió... Intenta iniciar sesión de nuevo",
-                    1500,
-                    "./"
-                  );
-                } else if (res.status == "non-existent") {
-                  normalAlert("info", res.message, 1500, "");
-                } else {
-                  normalAlert(
-                    "success",
-                    "La historia clínica ha sido eliminada correctamente",
-                    1500,
-                    ""
-                  );
-                  changeTable();
+              fetch(
+                "http://localhost:3000/history/status/" +
+                  document.querySelector("#deleteId").value,
+                {
+                  method: "DELETE",
+                  headers: {
+                    Authorization: localStorage.getItem("token"),
+                    "Content-Type": "application/json",
+                  },
                 }
-              });
-          }
-        });
-    });
-});
+              )
+                .then((res) => res.json())
+                .then((res) => {
+                  if (res.status == "error") {
+                    normalAlert(
+                      "error",
+                      "La sesión expiró o algo ocurrió... Intenta iniciar sesión de nuevo",
+                      1500,
+                      "./"
+                    );
+                  } else if (res.status == "non-existent") {
+                    normalAlert("info", res.message, 1500, "");
+                  } else {
+                    normalAlert(
+                      "success",
+                      "El estado de la historia clínica ha sido cambiado correctamente",
+                      1500,
+                      ""
+                    );
+                    changeTable();
+                  }
+                });
+            }
+          });
+      });
+  });
+})();

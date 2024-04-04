@@ -50,6 +50,7 @@
       zeroRecords: "Ningún médico encontrado",
       info: "Mostrando _START_ a _END_ médicos de _TOTAL_ ",
       infoEmpty: "Ningún médico encontrado",
+      emptyTable: "Sin datos para mostrar",
       infoFiltered: "(filtrados desde _MAX_ médicos totales)",
       search: "Buscar:",
       loadingRecords: "Cargando...",

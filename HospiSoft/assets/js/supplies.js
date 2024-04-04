@@ -50,6 +50,7 @@
       zeroRecords: "Ningún suministro encontrado",
       info: "Mostrando _START_ a _END_ suministros de _TOTAL_ ",
       infoEmpty: "Ningún suministro encontrado",
+      emptyTable: "Sin datos para mostrar",
       infoFiltered: "(filtrados desde _MAX_ suministros totales)",
       search: "Buscar:",
       loadingRecords: "Cargando...",

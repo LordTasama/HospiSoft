@@ -64,6 +64,13 @@
                   document.querySelector("#addDoctor"))
               ) {
                 location.href = "./dashboard.html";
+              } else if (
+                document.querySelector("#addHistory") &&
+                res[0].id_rol != 0 &&
+                res[0].id_rol != 1 &&
+                res[0].id_rol != 2
+              ) {
+                location.href = "./dashboard.html";
               }
               document.querySelector("#usernameLbl").innerHTML =
                 res[0].nombres + " " + res[0].apellidos;

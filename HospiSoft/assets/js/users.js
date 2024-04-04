@@ -49,6 +49,7 @@
       zeroRecords: "Ningún usuario encontrado",
       info: "Mostrando _START_ a _END_ usuarios de _TOTAL_ ",
       infoEmpty: "Ningún usuario encontrado",
+      emptyTable: "Sin datos para mostrar",
       infoFiltered: "(filtrados desde _MAX_ usuarios totales)",
       search: "Buscar:",
       loadingRecords: "Cargando...",

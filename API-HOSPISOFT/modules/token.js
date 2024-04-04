@@ -21,7 +21,7 @@ generarToken.post("/token", (req, res) => {
       },
       "taSa13tOb03", // Clave secreta para firmar el token
       {
-        expiresIn: 60 * 60 * 10, // El token expira en 1 hora (60 minutos * 60 segundos)
+        expiresIn: 60 * 60, // El token expira en 1 hora (60 minutos * 60 segundos)
       }
     );
 

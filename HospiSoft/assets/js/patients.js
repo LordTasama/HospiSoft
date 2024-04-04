@@ -70,6 +70,7 @@
       zeroRecords: "Ningún paciente encontrado",
       info: "Mostrando _START_ a _END_ pacientes de _TOTAL_ ",
       infoEmpty: "Ningún paciente encontrado",
+      emptyTable: "Sin datos para mostrar",
       infoFiltered: "(filtrados desde _MAX_ pacientes totales)",
       search: "Buscar:",
       loadingRecords: "Cargando...",

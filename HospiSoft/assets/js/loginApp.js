@@ -72,12 +72,7 @@
               normalAlert("error", "Su usuario está inactivo", 1500, "");
             } else {
               localStorage.setItem("token", res.token);
-              normalAlert(
-                "success",
-                "Sesión iniciada",
-                1500,
-                "./dashboard.html"
-              );
+              location.href = "./dashboard.html";
             }
           }
         });
