@@ -35,18 +35,23 @@
     const rol = document.querySelector("#postRol");
 
     if (!email.value || !password.value) {
-      alert("Comprueba si hay campos vacíos");
+      normalAlert("warning", "Comprueba si hay campos vacíos", 1500, "");
       return;
     }
     if (rol.selectedIndex == -1) {
-      alert("Selecciona un rol");
+      normalAlert("warning", "Selecciona un rol", 1500, "");
       return;
     }
 
     // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.value)) {
-      alert("El correo electrónico ingresado no es válido.");
+      normalAlert(
+        "error",
+        "El correo electrónico ingresado no es válido.",
+        1500,
+        ""
+      );
       return;
     }
     try {
