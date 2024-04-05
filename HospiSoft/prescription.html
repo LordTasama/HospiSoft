@@ -9,8 +9,9 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Médicos</title>
+    <title>Fórmulas</title>
     <link rel="shortcut icon" type="image/x-icon" href="assets/image/2.jpg" />
+
     <!-- Custom fonts for this template-->
     <link
       href="./vendor/fontawesome-free/css/all.min.css"
@@ -24,22 +25,7 @@
 
     <!-- Custom styles for this template-->
     <link href="./css/sb-admin-2.min.css" rel="stylesheet" />
-
     <link rel="stylesheet" href="./assets/css/css.css" />
-
-    <link
-      rel="stylesheet"
-      href="./node_modules/sweetalert2/dist/sweetalert2.min.css"
-    />
-    <!-- DataTable -->
-    <link
-      rel="stylesheet"
-      href="./vendor/datatables/dataTables.responsive.min.js"
-    />
-    <link
-      rel="stylesheet"
-      href="./vendor/datatables/dataTables.bootstrap4.min.css"
-    />
   </head>
 
   <body id="page-top">
@@ -387,7 +373,6 @@
                       >
                     </div>
                   </div>
-
                   <img
                     class="img-profile rounded-circle"
                     src="./img/undraw_profile.svg"
@@ -429,75 +414,43 @@
           <!-- End of Topbar -->
 
           <!-- Begin Page Content -->
-          <div class="container-fluid">
-            <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Médicos</h1>
-            <p class="mb-4">Aquí podrá gestionar a todos los médicos.</p>
-
-            <!-- DataTables Example -->
-            <div class="card shadow mb-4">
-              <div
-                class="card-header py-3 d-flex align-items-center justify-content-between"
-                id="headerTable"
-              >
-                <h6 class="m-0 font-weight-bold text-primary">
-                  Gestionar médicos
-                </h6>
-
-                <div>
-                  <a
-                    class="btn btn-success m-2"
-                    href="#"
-                    data-toggle="modal"
-                    data-target="#addDoctor"
-                  >
-                    Nuevo
-                  </a>
-                  <a
-                    class="btn btn-primary m-2"
-                    href="#"
-                    data-toggle="modal"
-                    data-target="#editDoctor"
-                  >
-                    Editar
-                  </a>
-                  <a
-                    class="btn btn-danger m-2"
-                    href="#"
-                    data-toggle="modal"
-                    data-target="#deleteDoctor"
-                  >
-                    Estado
-                  </a>
-                </div>
-              </div>
-
-              <div class="card-body">
-                <div class="table-responsive" id="containerTable">
-                  <table
-                    class="table table-bordered"
-                    id="dataTable"
-                    width="100%"
-                    cellspacing="0"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Identificación</th>
-                        <th>Nombres</th>
-                        <th>Apellidos</th>
-                        <th>Correo</th>
-                        <th>Teléfono</th>
-                        <th>Especialidad</th>
-                        <th>Estado</th>
-                      </tr>
-                    </thead>
-                    <tbody id="bodyTable"></tbody>
-                  </table>
+          <div class="container-fluid"></div>
+          <h1 class="h3 mb-2 text-gray-800 text-center">Fórmula</h1>
+          <div class="row vh-100">
+            <div class="col-6 mx-auto">
+              <div class="card shadow border">
+                <div class="card-body">
+                  <form>
+                    <div class="mb-3 row">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="staticEmail"
+                        placeholder="Correo"
+                      />
+                    </div>
+                    <div class="mb-3 row">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="inputPassword"
+                        placeholder="Contraseña"
+                      />
+                    </div>
+                    <div class="mb-3 row d-flex justify-content-center">
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        id="btnGenPrescription"
+                      >
+                        Generar
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
-          <!-- /.container-fluid -->
         </div>
         <!-- End of Main Content -->
 
@@ -558,252 +511,14 @@
             >
               Cancelar
             </button>
-            <a class="btn btn-primary" href="login.html" id="logOut">Aceptar</a>
+            <a class="btn btn-primary" href="./login.html" id="logOut"
+              >Aceptar</a
+            >
           </div>
         </div>
       </div>
     </div>
-    <!-- Add doctor modal-->
-    <div
-      class="modal fade"
-      id="addDoctor"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form>
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Agregar médico</h5>
-              <button
-                class="close"
-                type="button"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
 
-            <div class="modal-body">
-              <label for="postId" class="form-label mb-0">Identificación</label>
-              <input type="number" id="postId" class="form-control" />
-              <label for="postNames" class="form-label mb-0 mt-2"
-                >Nombres</label
-              >
-              <input type="text" id="postNames" class="form-control" />
-              <label for="postLastName" class="form-label mb-0 mt-2"
-                >Apellidos</label
-              >
-              <input type="text" id="postLastName" class="form-control" />
-              <label for="postEmail" class="form-label mb-0 mt-2"
-                >Correo electrónico</label
-              >
-              <input type="email" id="postEmail" class="form-control" />
-              <label for="postPhone" class="form-label mb-0 mt-2"
-                >Teléfono</label
-              >
-              <input type="number" id="postPhone" class="form-control" />
-              <label for="postSpecialty" class="form-label mb-0 mt-2"
-                >Especialidad</label
-              >
-              <select id="postSpecialty" class="form-control">
-                <option value="0" selected>Cardiología</option>
-                <option value="1">Dermatología</option>
-                <option value="2">Endocrinología</option>
-                <option value="3">Gastroenterología</option>
-                <option value="4">Hematología</option>
-                <option value="5">Neurología</option>
-                <option value="6">Oncología</option>
-                <option value="7">Oftalmología</option>
-                <option value="8">Ortopedia</option>
-                <option value="9">Otorrinolaringología</option>
-                <option value="10">Pediatría</option>
-                <option value="11">Psiquiatría</option>
-                <option value="12">Neumología</option>
-                <option value="13">Radiología</option>
-                <option value="14">Urología</option>
-              </select>
-            </div>
-            <div class="modal-footer">
-              <button
-                class="btn btn-secondary"
-                type="button"
-                data-dismiss="modal"
-              >
-                Cancelar
-              </button>
-              <button class="btn btn-success" type="button" id="btnAdd">
-                Agregar
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Edit doctor modal-->
-    <div
-      class="modal fade"
-      id="editDoctor"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form>
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Editar usuario</h5>
-              <button
-                class="close"
-                type="button"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-
-            <div class="modal-body">
-              <label for="putId" class="form-label mb-0" disabled
-                >Identificación</label
-              >
-              <div class="input-group">
-                <input
-                  type="number"
-                  id="putId"
-                  class="form-control py-2 border-right-0 border"
-                />
-                <span class="input-group-append">
-                  <button
-                    class="btn btn-outline-secondary border-left-0 border"
-                    type="button"
-                    id="btnSearchPut"
-                  >
-                    <i class="fa fa-search"></i>
-                  </button>
-                </span>
-              </div>
-              <label for="putNames" class="form-label mb-0 mt-2">Nombres</label>
-              <input type="text" id="putNames" class="form-control" />
-              <label for="putLastName" class="form-label mb-0 mt-2"
-                >Apellidos</label
-              >
-              <input type="text" id="putLastName" class="form-control" />
-              <label for="putEmail" class="form-label mb-0 mt-2"
-                >Correo electrónico</label
-              >
-              <input type="email" id="putEmail" class="form-control" />
-              <label for="putPhone" class="form-label mb-0 mt-2"
-                >Teléfono</label
-              >
-              <input type="number" id="putPhone" class="form-control" />
-              <label for="putSpecialty" class="form-label mb-0 mt-2"
-                >Especialidad</label
-              >
-              <select id="putSpecialty" class="form-control">
-                <option value="0">Cardiología</option>
-                <option value="1">Dermatología</option>
-                <option value="2">Endocrinología</option>
-                <option value="3">Gastroenterología</option>
-                <option value="4">Hematología</option>
-                <option value="5">Neurología</option>
-                <option value="6">Oncología</option>
-                <option value="7">Oftalmología</option>
-                <option value="8">Ortopedia</option>
-                <option value="9">Otorrinolaringología</option>
-                <option value="10">Pediatría</option>
-                <option value="11">Psiquiatría</option>
-                <option value="12">Neumología</option>
-                <option value="13">Radiología</option>
-                <option value="14">Urología</option>
-              </select>
-            </div>
-            <div class="modal-footer">
-              <button
-                class="btn btn-secondary"
-                type="button"
-                data-dismiss="modal"
-              >
-                Cancelar
-              </button>
-              <button class="btn btn-success" type="button" id="btnEdit">
-                Guardar
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Delete doctor modal-->
-    <div
-      class="modal fade"
-      id="deleteDoctor"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form>
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Cambiar estado</h5>
-              <button
-                class="close"
-                type="button"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-
-            <div class="modal-body">
-              <label class="form-label" id="deleteFullName"></label>
-              <label class="form-label mt-3" for="deleteId"
-                >Identificación</label
-              >
-              <div class="input-group">
-                <input
-                  type="number"
-                  id="deleteId"
-                  class="form-control py-2 border-right-0 border"
-                />
-                <span class="input-group-append">
-                  <button
-                    class="btn btn-outline-secondary border-left-0 border"
-                    type="button"
-                    id="btnSearchDelete"
-                  >
-                    <i class="fa fa-search"></i>
-                  </button>
-                </span>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                class="btn btn-secondary"
-                type="button"
-                data-dismiss="modal"
-              >
-                Cancelar
-              </button>
-              <button class="btn btn-success" type="button" id="btnDelete">
-                Confirmar
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <!--Alerts-->
-    <script src="./node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
     <!-- Bootstrap core JavaScript-->
     <script src="./vendor/jquery/jquery.min.js"></script>
     <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -814,17 +529,9 @@
     <!-- Custom scripts for all pages-->
     <script src="./js/sb-admin-2.min.js"></script>
 
-    <!-- DataTable -->
-
-    <script src="./vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="./vendor/datatables/dataTables.min.js"></script>
-    <script src="./vendor/datatables/dataTables.bootstrap4.min.js"></script>
-    <script src="./vendor/datatables/dataTables.responsive.min.js"></script>
-
-    <!-- Page level custom scripts -->
+    <!-- Page level plugins -->
     <script src="./assets/js/funcionality.js"></script>
-    <script src="./assets/js/alerts.js"></script>
+
     <script src="./assets/js/login.js"></script>
-    <script src="./assets/js/doctors.js"></script>
   </body>
 </html>
